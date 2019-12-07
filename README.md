@@ -25,10 +25,10 @@ Function 1:
 1.	Both reference and input files need to be fasta files. 
 2.	The coordinates of each insertion should be stated in title of each contig.
 e.g: 
-'''
+
 >Chr1:100-1000
 AAATCAACCGCGC
-'''
+
 
 Notes:
 -Coordinate is zero-based and left cap and right open
