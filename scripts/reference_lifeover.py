@@ -10,90 +10,44 @@ import sys
 import getopt
 import numpy as np
 
-reference_folder='./fixed/'
-
-logfile='./fixed_records.tsv'
-
-svpath='./step2_fixed/'
-
-newrecord='./fixed_records_step2.tsv'
-
-outnewrecord=0
-
-mode=0
-
-outputbed=0
-
-outputbedfile=''
-
-num_coordi_perline=[]
-
-ifreverse=1
-
-opts,args=getopt.getopt(sys.argv[1:],"f:r:l:s:n:c:b:o:R")
-for op, value in opts:
-	if op=='-f':
-		inputfile=value
-	if op=='-r':
-		reference_folder=value
-	if op=='-l':
-		logfile=value
-	if op=='-s':
-		svpath=value
-	if op=='-c':
-		mode=1
-		inputcordi=value
-		newrecord='./newcoordinates.txt'
-	if op=='-n':
-		outnewrecord=1
-		newrecord=value
-	if op=='-b':
-		outputbed=1
-		outputbedfile=value
-	if op=='-R':
-		ifreverse=-1
-				
-
-
-		
-
-#preparation for the input arguements
-
-
-if mode==1:
-
-	allcoordis={}
-
-	if os.path.isfile(inputcordi):
-
-
-		with open(inputcordi, mode='r') as f:
-
-			allcoordis=[[[x.strip().split('\t')[0].replace('Chr','chr'),int(a)] for a in x.strip().split('\t')[1:]] if ":" not in x  else  [[x.strip().split(':')[0].replace('Chr','chr'),int(x.strip().split(':')[1])]] for x in f.read().splitlines() if len(x)>0 and x[0]!="#"] 
-
-			num_coordi_perline=[len(x) for x in allcoordis]
-				
-			allcoordis=[a for x in allcoordis for a in x]
-
-			
-		f.close()		
-
-	else:
-		allcoordis=[[x.split(':')[0].replace('Chr','chr'), int(x.split(':')[1])] for x in inputcordi.split(',')] 
-
-
-else:
+def usage():
 	
-	if os.path.isfile(reference_folder):
-		
-		inputisfile=1
+	print 
+	
+	'''
+	Function 1 (This is the default function and will be disabled with –c):
 
-	else:
-			
-		inputisfile=0
+	Arguments required:
+
+	-f			input insertion file to fix the reference
+
+	-r			reference genome that will be fixed. Can be either a fasta file or folder contains all contigs files (format needs to be *.fa)
+
+	Arguments optional:
+
+	-l			input records tsv file which contains all information of prior fixations, default will be ./fixed_records.tsv. records file can be missed.
+
+	-s			saved file, default will be step2_fixed. If input is folder then save will be folder, also input is fasta file, save will be fasta file.
+
+	-n			saved new records after fixations. 
+
+
+	Function 2 (this function will be enable with –c) :
+
+	Arguments required:
+
+	-c			input coordinates, can be either a file or direct input (when directly input coordinates, please make sure this is no file with same name).
+
+	-l			Tsv record file that records all fixations
+
+	Arguments optional:
+
+	-n			save new calculated coordinates. If a path indicated, will output to the path otherwise it will output to default file newcoordinates.txt. 
+	'''
+
 
 def inputallchroms(chromefolder):
-	
+		
 	seqs={}
 	titles={}
 	
@@ -374,7 +328,7 @@ def save(titles,seqs):
 	if inputisfile ==1 :
 
 
-		with open(svpath, mode='a') as f:
+		with open(svfolder, mode='a') as f:
 			
 			for name  in sorted(seqs.keys()):
 
@@ -386,7 +340,7 @@ def save(titles,seqs):
 	else:
 		for name,seq  in seqs.items():
 
-			with open(svpath+name+'.fa', mode='w') as f:
+			with open(svfolder+name+'.fa', mode='w') as f:
 
 				f.write(titles[name]+'\n'+seq)
 
@@ -395,8 +349,7 @@ def save(titles,seqs):
 
 
 def fixall():
-
-
+	
 	#input all references 
 	titles, seqs=inputallchroms(reference_folder)
 
@@ -499,6 +452,104 @@ def outputcoordi():
 
 if __name__=="__main__":
 	
+	reference_folder='./fixed/'
+
+	logfile='./fixed_records.tsv'
+
+	svfolder='./step2_fixed/'
+
+	newrecord='./fixed_records_step2.tsv'
+
+	outnewrecord=0
+
+	mode=0
+
+	outputbed=0
+
+	outputbedfile=''
+
+	num_coordi_perline=[]
+
+	ifreverse=1
+	
+	try:
+		opts,args=getopt.getopt(sys.argv[1:],"f:r:l:s:n:c:b:o:R")
+	except getopt.GetoptError:
+		usage()
+		sys.exit(2)
+
+	if not len(sys.argv[1:]):
+		
+		usage()
+		sys.exit(2)
+
+	for op, value in opts:
+		if op=='-f':
+			inputfile=value
+		if op=='-r':
+			reference_folder=value
+		elif op=='-l':
+			logfile=value
+		elif op=='-s':
+			svfolder=value
+		elif op=='-c':
+			mode=1
+			inputcordi=value
+			newrecord='./newcoordinates.txt'
+		elif op=='-n':
+			outnewrecord=1
+			newrecord=value
+		elif op=='-b':
+			outputbed=1
+			outputbedfile=value
+		elif op=='-R':
+			ifreverse=-1
+		elif op in ('-h', '--help'):
+			usage()
+			sys.exit(2)
+		else:
+			usage()
+			sys.exit(2)		
+
+	#preparation for the input arguements
+
+
+	if mode==1:
+
+		allcoordis={}
+
+		if os.path.isfile(inputcordi):
+
+
+			with open(inputcordi, mode='r') as f:
+
+				allcoordis=[[[x.strip().split('\t')[0].replace('Chr','chr'),int(a)] for a in x.strip().split('\t')[1:]] if ":" not in x  else  [[x.strip().split(':')[0].replace('Chr','chr'),int(x.strip().split(':')[1])]] for x in f.read().splitlines() if len(x)>0 and x[0]!="#"] 
+
+				num_coordi_perline=[len(x) for x in allcoordis]
+					
+				allcoordis=[a for x in allcoordis for a in x]
+
+				
+			f.close()		
+
+		else:
+			allcoordis=[[x.split(':')[0].replace('Chr','chr'), int(x.split(':')[1])] for x in inputcordi.split(',')] 
+
+
+	else:
+		
+		if os.path.isfile(reference_folder):
+			
+			inputisfile=1
+
+		else:
+				
+			inputisfile=0
+
+			try:
+				os.mkdir(svfolder)
+			except:
+				pass
 
 	if mode==0:
 
@@ -507,6 +558,3 @@ if __name__=="__main__":
 	elif mode==1:
 
 		outputcoordi()		
-
-
-
