@@ -18,7 +18,7 @@ it adds fixations to designated reference. It has following features:
 when input with coordinates, it can calculate new coordinates based on records of fixations. The algorithm has been optimized to work will large dataset.
 
 
--------Formats & Requirements-------:
+-------Formats & Requirements-------
 
 
 Function 1:
@@ -79,7 +79,7 @@ Python2.7 fix_step2.py –l record.tsv  -c chr1:10000,chr1:1000000,chr2:200000  
 
 
 
--------Options-------:
+-------Options-------
 
 Function 1 (This is the default function and will be disabled with –c):
 
