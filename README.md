@@ -5,7 +5,7 @@
 
 This is a python2.7 script. It has two main functions 1.reference fixation and 2. Coordinate transferring between pre-fixation and after-fixation:
 
->First, reference fixation:
+-First, reference fixation:
 
 it adds fixations to designated reference. It has following features:
 
@@ -13,7 +13,7 @@ it adds fixations to designated reference. It has following features:
 2.	It will update the coordinates after each fixation and output to designed record file after finish.
 3.	It will automatically check for any overlap of fix patches (including the designated patches and prior patches in the record file). After find all overlap, it will choose the largest one.
 
->Second, coordinate transferring:
+-Second, coordinate transferring:
 
 when input with coordinates, it can calculate new coordinates based on records of fixations. The algorithm has been optimized to work will large dataset.
 
