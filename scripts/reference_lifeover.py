@@ -92,12 +92,6 @@ else:
 			
 		inputisfile=0
 
-		try:
-			os.mkdir(svfolder)
-		except:
-			pass
-
-
 def inputallchroms(chromefolder):
 	
 	seqs={}
