@@ -14,7 +14,7 @@ reference_folder='./fixed/'
 
 logfile='./fixed_records.tsv'
 
-svfolder='./step2_fixed/'
+svpath='./step2_fixed/'
 
 newrecord='./fixed_records_step2.tsv'
 
@@ -39,7 +39,7 @@ for op, value in opts:
 	if op=='-l':
 		logfile=value
 	if op=='-s':
-		svfolder=value
+		svpath=value
 	if op=='-c':
 		mode=1
 		inputcordi=value
@@ -374,7 +374,7 @@ def save(titles,seqs):
 	if inputisfile ==1 :
 
 
-		with open(svfolder, mode='a') as f:
+		with open(svpath, mode='a') as f:
 			
 			for name  in sorted(seqs.keys()):
 
@@ -386,7 +386,7 @@ def save(titles,seqs):
 	else:
 		for name,seq  in seqs.items():
 
-			with open(svfolder+name+'.fa', mode='w') as f:
+			with open(svpath+name+'.fa', mode='w') as f:
 
 				f.write(titles[name]+'\n'+seq)
 
