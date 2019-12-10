@@ -10,7 +10,7 @@
 
 This is a python2.7 script. It has two main functions 1. replace specified regions of the reference sequence and 2. Liftover coordinates between original and new references:
 
-For function 2, we are also providing a records to transfer the coordinates between our new human diversity reference and the old reference (hg38). (in ./record/ folder)
+For function 2, we are also providing a records to transfer the coordinates between our new human diversity reference and the old reference (hg38). (in ./records/ folder)
 
 
 
