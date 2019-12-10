@@ -3,29 +3,64 @@
 //  Created by Walfred MA in 2019, wangfei.ma@ucsf.edu.
 //  Copyright © 2019 UCSF-Kwoklab. All rights reserved.
 
+
 -------Introduction-------
 
-This is a python2.7 script. It has two main functions 1.reference fixation and 2. Coordinate transferring between pre-fixation and after-fixation:
 
--First, reference fixation:
 
-it adds fixations to designated reference. It has following features:
+This is a python2.7 script. It has two main functions 1. replace specified regions of the reference sequence and 2. Liftover coordinates between original and new references:
 
-1.	It will replace the labeled regions with the fixed sequences. After it fixes all regions, it will output to designed folder (per file each contig). 
-2.	It will update the coordinates after each fixation and output to designed record file after finish.
-3.	It will automatically check for any overlap of fix patches (including the designated patches and prior patches in the record file). After find all overlap, it will choose the largest one.
+For function 2, we are also providing a records to transfer the coordinates between our new human diversity reference and the old reference (hg38).
 
--Second, coordinate transferring:
 
-when input with coordinates, it can calculate new coordinates based on records of fixations. The algorithm has been optimized to work will large dataset.
+
+
+-------First_function-------
+
+
+
+
+replace specified regions of the reference sequence:
+
+This takes up to three files: 
+1. Reference file;
+2. patch file (the sequence to be incorporated into new reference with designated coordinates);
+3. (optional) Previous records that includes all past changes of the reference;
+
+It has following features:
+
+1.	It will load all patch files, replace/insert the designated regions on the referebce with the patches. 
+2.	It will update the coordinates after each correction. After finishing all correction, it saves final coordinates to a new record file.
+3.	It will automatically check for any overlap of fix patches (including the input patches and prior patches in previous records). It will choose the largest one among all overlapped patches.
+
+
+
+
+
+-------Second_function-------
+
+coordinate transferring:
+
+This takes two files: 
+1. designated query coordinated in old reference;  
+2. Previous records that includes all past changes of the reference. 
+
+By default, it takes old coordinates (coordinates before changes in previous records) as the query, and output new coordinates (coordinates after changes in previous records), based on previous records.
+
+If -R presents, it reversely takes new coordinate as the query, as output old coordinates based on previous records.
+
+The algorithm has been optimized to work will large dataset.
+
 
 
 -------Formats & Requirements-------
 
 
+
 Function 1:
-1.	Both reference and input files need to be fasta files. 
-2.	The coordinates of each insertion should be stated in title of each contig.
+
+1.	Both reference and patch files need to be fasta files. 
+2.	The coordinates of each patch should be stated in title of each contig.
 e.g: 
 
 >Chr1:100-1000
@@ -36,24 +71,29 @@ Notes:
 -Coordinate is zero-based and left cap and right open
 -if start position is after stop position, the script will treat this as tandem expansion, and thus will duplicate the region between start and stop sites.
 
+
+
+
+
+
 Function 2:
 
 1.	All coordinates must follow chromosome:coordinate. E.g: chr1:2000, Chr:20000(chr1 or Chr1 will be treat as the same chromosome, but CHR1 will not).
 
-2.	The input file’s coordinates should be separated into each line. 
-E.g: 
-Chr1:20000
+2.	The patch file’s coordinates should be separated into each line. <br>
+E.g: <br>
+Chr1:20000 <br>
 Chr1:232020
 
 3.	If direct input, please use “,” as the delimiter. 
-4.	Old coordinates are the first column of output file and the new coordinates are the second column. 
+4.	For output coordinates file, query coordinates are the first column and output coordinates are the second column. 
 
 
-It also accepts a tsv record file (option -l) that includes all past fixations.
+It accepts a tsv record file (option -l) that includes all past correction.
 
 Titles should be:
 
-'#name': name of each fixation.
+'#name': name of each patch.
 'chr': fixed contig (chromosome)
 'start_hg38':start base on reference
 'stop_hg38':stop base on reference 
@@ -73,11 +113,11 @@ Python2.7 fix_step2.py –f input_insertion.fa –r hg38.fa [-l records.tsv] [-s
 
 Example of Function 2:
 
-Python2.7 fix_step2.py –l record.tsv  -c oldcoordinates.txt   [-n newcoordinates.txt]
+Python2.7 fix_step2.py –l record.tsv  -c query_coordinates [-n output_coordinates.txt]
 
 Or 
 
-Python2.7 fix_step2.py –l record.tsv  -c chr1:10000,chr1:1000000,chr2:200000   [-n newcoordinates.txt]
+Python2.7 fix_step2.py –l record.tsv  -c chr1:10000,chr1:1000000,chr2:200000   [-n output_coordinates.txt]
 
 
 
@@ -85,32 +125,41 @@ Python2.7 fix_step2.py –l record.tsv  -c chr1:10000,chr1:1000000,chr2:200000  
 
 -------Options-------
 
+
+
+
+
 Function 1 (This is the default function and will be disabled with –c):
 
 Arguments required:
 
--f			input insertion file to fix the reference
+-f			input patch files to update the reference
 
--r			reference genome that will be fixed. Can be either a fasta file or folder contains all contigs files (format needs to be *.fa)
+-r			reference genome that will be updated. Can be either a fasta file or folder contains all contigs files (format needs to be *.fa)
 
 Arguments optional:
 
--l			input records tsv file which contains all information of prior fixations, default will be ./fixed_records.tsv. records file can be missed.
+-l			(optional) input records tsv file which contains all information of prior corrections, default will be ./fixed_records.tsv.
 
--s			saved file, default will be step2_fixed. If input is folder then save will be folder, also input is fasta file, save will be fasta file.
+-s			saved path, default will be ./step2_fixed. If input is folder then save will be folder; if input is a fasta file, saves will be a fasta file.
 
--n			saved new records after fixations. 
+-n			new records file save path after corrections. 
+
+
+
+
 
 
 Function 2 (this function will be enable with –c) :
 
 Arguments required:
 
--c			input coordinates, can be either a file or direct input (when directly input coordinates, please make sure this is no file with same name).
+-c			query coordinates, can be either a file or direct input (when directly input coordinates, please make sure this is no file with the same name).
 
--l			Tsv record file that records all fixations
+-l			tsv record file that records all previous corrections. 
 
 Arguments optional:
 
--n			save new calculated coordinates. If a path indicated, will output to the path otherwise it will output to default file newcoordinates.txt. 
+-n			output coordinates file save path. default file is ./newcoordinates.txt.
+
 
