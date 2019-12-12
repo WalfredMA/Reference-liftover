@@ -13,14 +13,14 @@ This tool is written in python2.7 and it has two functions: 1. it edits referenc
 -------First_function (Not applicable to most users)-------
 
 This function accepts up to three input files: 
-1. Reference fasta file to be edited
-2. Patch fasta file containing sequences to be incorporated into item #1
+1. Reference fasta file/or a folder of reference fasta files to be edited
+2. A single patch fasta file containing sequences to be incorporated into item #1
 3. (Optional) Previous editing history file that records all past changes made to item #1
 
 Specific features:
 
-1.	It edits the reference sequences based on users' desired sequences, as provided in them #2
-2.	It updates the sequence coordinates after each edit. After editing, the final coordinates are output to a record file
+1.	It edits the reference sequences based on users' input sequences, as provided in them #2
+2.	It updates the sequence coordinates after each edit. After editing, the query coordinates and final coordinates are output to a record file
 3.	It automatically checks for any overlap between patches (including the input patches and prior patches stored in previous records). It will choose the largest one among all overlapping patches.
 
 -------Second_function-------
@@ -29,7 +29,7 @@ This function accepts two input files:
 1. Query coordinates to be converted (can either be a direct input in the command or an input file)
 2. Previous editing records that includes all past changes to the reference. For conversion between Hg38 and the Human Diversity Reference, the record file is provided in this repository (./records/record_all_chr.tsv.gz). Please unzip before use.
 
-By default, the tool assumes that the query coordinate is based on the pre-edited reference (Hg38) and it converts the coordinate to the post-edited reference (HDR). If **-R** is used, the query coordinate is assumed to be HDR.
+By default, the tool assumes that the query coordinate is based on the pre-edited reference (Hg38) and it converts the coordinate to the post-edited reference (HDR). If **-R** is used, the query coordinate is assumed to be HDR and it converts the coordinate back to the pre-edited reference (Hg38).
 
 The algorithm has been optimized to work with large dataset.
 
