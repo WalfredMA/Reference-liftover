@@ -29,7 +29,7 @@ This function accepts two input files:
 1. Query coordinates to be converted (can either be a direct input in the command or an input file)
 2. Previous editing records that includes all past changes to the reference. For conversion between Hg38 and the Human Diversity Reference, the record file is provided in this repository (./records/record_all_chr.tsv.gz). Please unzip before use.
 
-By default, the tool assumes that the query coordinate is based on the edited reference (HDR) and it converts the coordinate to Hg38. If **-R** is used, the query coordinate is assumed to be Hg38.
+By default, the tool assumes that the query coordinate is based on the pre-edited reference (Hg38) and it converts the coordinate to the post-edited reference (HDR). If **-R** is used, the query coordinate is assumed to be HDR.
 
 The algorithm has been optimized to work with large dataset.
 
@@ -130,6 +130,6 @@ Arguments optional:
 
 -n			output coordinates file save path. default file is ./newcoordinates.txt
 
--R      query coordinates are based on the pre-edited reference file
+-R      query coordinates are based on the post-edited reference file
 
 
